@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask, render_template, redirect, url_for
-from flask_login import LoginManager, login_user, current_user
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from passlib.hash import pbkdf2_sha256
 from flask_socketio import SocketIO, emit
 from wtform_fields import *
@@ -58,6 +58,20 @@ def login():
         return "not logged in"
 
     return render_template('login.html', form=login_form)
+
+
+@app.route('/chat', methods=['GET', 'POST'])
+@login_required
+def chat():
+    return "Chat with me"
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    logout_user()
+    return "Logged out"
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
