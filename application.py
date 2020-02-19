@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from passlib.hash import pbkdf2_sha256
 from flask_socketio import SocketIO, emit
@@ -40,6 +40,8 @@ def index():
         user = User(username=username, password=hashed_pswd)
         db.session.add(user)
         db.session.commit()
+
+        flash("Registered succesfully. Please login.", 'success')
         return redirect(url_for('login'))
 
     return render_template('index.html', form=reg_form)
@@ -61,14 +63,17 @@ def login():
 @app.route('/chat', methods=['GET', 'POST'])
 def chat():
     if not current_user.is_authenticated:
-        return "Please Logged in!"
+        flash("Please login", 'danger')
+        return redirect(url_for('login'))
+
     return "Chat with me"
 
 
 @app.route('/logout', methods=['GET'])
 def logout():
     logout_user()
-    return "Logged out"
+    flash("You have logged out successfuly", "success")
+    return redirect(url_for('login'))
 
 
 
