@@ -13,6 +13,8 @@ socketio = SocketIO(app)
 @app.route("/", methods=['GET', 'POST'])
 def index():
     reg_form = RegistrationForm()
+    if reg_form.validate_on_submit():
+        return "Great"
     return render_template('index.html', form=reg_form)
 
 
