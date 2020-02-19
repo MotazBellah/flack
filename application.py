@@ -14,6 +14,7 @@ socketio = SocketIO(app)
 
 # configure database
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://empawzdedkzmzu:ec111b26dda56b50cd61a648b60eebda842e2189b782ff308a8d56d3c1a512c6@ec2-184-72-236-3.compute-1.amazonaws.com:5432/d8s47squ17rp4l"
+app.config['WTF_CSRF_SECRET_KEY'] = "b'f\xfa\x8b{X\x8b\x9eM\x83l\x19\xad\x84\x08\xaa"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
