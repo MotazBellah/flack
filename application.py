@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask, render_template, redirect, url_for
+from passlib.hash import pbkdf2_sha256
 from flask_socketio import SocketIO, emit
 from wtform_fields import *
 from models import *
@@ -21,13 +22,15 @@ def index():
     if reg_form.validate_on_submit():
         username = reg_form.username.data
         password = reg_form.password.data
+        # hash the password, and save it in db
+        hashed_pswd = pbkdf2_sha256.hash(password)
 
         # Check username exists
         user_object = User.query.filter_by(username=username).first()
         if user_object:
             return 'Someone else has taken this username!'
         # Add user to DB
-        user = User(username=username, password=password)
+        user = User(username=username, password=hashed_pswd)
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('login'))
