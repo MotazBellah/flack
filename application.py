@@ -2,15 +2,18 @@ import os
 
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
+from wtform_fields import *
 
+# configure app
 app = Flask(__name__)
-app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+app.config["SECRET_KEY"] = 'Super_Secret'
 socketio = SocketIO(app)
 
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    reg_form = RegistrationForm()
+    return render_template('index.html', form=reg_form)
 
 
 if __name__ == '__main__':

@@ -4,4 +4,11 @@
 
 {% block content %}
     <h1>Get started</h1>
+
+    <form>
+        <div>
+            {{ form.username(placeholder='User name') }}
+            {{ form.password(placeholder='Password') }}
+        </div>
+    </form>
 {% endblock %}
