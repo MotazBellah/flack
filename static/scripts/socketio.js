@@ -17,11 +17,11 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log(data);
     });
 
-    const button = document.querySelector('#send_message');
-    const inputText = document.querySelector('#user_message');
+    // const button = document.querySelector('#send_message');
+    // const inputText = document.querySelector('#user_message');
     // Get the text on the input field and send it to the server once the button is clicked
-    button.onclick = () => {
-        socket.send(inputText.value)
+    document.querySelector('#send_message').onclick = () => {
+        socket.send(document.querySelector('#user_message').value)
     }
 
 
