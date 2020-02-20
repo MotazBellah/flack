@@ -80,8 +80,9 @@ def logout():
 # server-side event handler to recivie/send messages
 @socketio.on('message')
 def message(data):
-    print(f"\n\n{data}\n\n")
+    # print(f"\n\n{data}\n\n")
     send(data)
+
 
 
 if __name__ == '__main__':
