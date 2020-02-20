@@ -13,9 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector('#display-message-section').append(p);
     });
 
-    socket.on('some-event', data => {
-        console.log(data);
-    });
+    // socket.on('some-event', data => {
+    //     console.log(data);
+    // });
 
     // const button = document.querySelector('#send_message');
     // const inputText = document.querySelector('#user_message');
