@@ -77,7 +77,7 @@ def logout():
     flash("You have logged out successfuly", "success")
     return redirect(url_for('login'))
 
-# server-side event handler to recivie messages
+# server-side event handler to recivie/send messages
 @socketio.on('message')
 def message(data):
     print(f"\n\n{data}\n\n")
