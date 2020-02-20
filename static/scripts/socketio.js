@@ -1,4 +1,3 @@
-alert('hh')
 document.addEventListener("DOMContentLoaded", () => {
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
@@ -22,8 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // const inputText = document.querySelector('#user_message');
     // Get the text on the input field and send it to the server once the button is clicked
     document.querySelector('#send_message').onclick = () => {
-        // socket.send(document.querySelector('#user_message').value)
-        alert('j')
+        socket.send(document.querySelector('#user_message').value)
+
     }
 
 
