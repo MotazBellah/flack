@@ -1,15 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-    // Connect to the server
-    socket.on('connect', () => {
-        socket.send("Iam connected");
-    });
+
     // recieve message from the server
     socket.on('message', data => {
         const p = document.createElement('p');
+        const span_username = document.createElement('span');
         const br = document.createElement('br');
-        p.innerHTML = data;
+        span_username.innerHTML = data.username;
+        p.innerHTML = span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML;
         document.querySelector('#display-message-section').append(p);
     });
 
@@ -17,11 +16,12 @@ document.addEventListener("DOMContentLoaded", () => {
     //     console.log(data);
     // });
 
-    // const button = document.querySelector('#send_message');
-    // const inputText = document.querySelector('#user_message');
+
     // Get the text on the input field and send it to the server once the button is clicked
     document.querySelector('#send_message').onclick = () => {
-        socket.send(document.querySelector('#user_message').value)
+        socket.send({'msg': document.querySelector('#user_message').value,
+                     'username': username
+                 });
 
     }
 

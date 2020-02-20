@@ -68,7 +68,7 @@ def chat():
     #     flash("Please login", 'danger')
     #     return redirect(url_for('login'))
 
-    return render_template('chat.html')
+    return render_template('chat.html', username=current_user.username)
 
 
 @app.route('/logout', methods=['GET'])
@@ -82,6 +82,7 @@ def logout():
 def message(data):
     # print(f"\n\n{data}\n\n")
     send(data)
+
 
 
 
