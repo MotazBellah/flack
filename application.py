@@ -3,7 +3,7 @@ import os
 from flask import Flask, render_template, redirect, url_for, flash
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from passlib.hash import pbkdf2_sha256
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, send
 from wtform_fields import *
 from models import *
 
@@ -11,6 +11,7 @@ from models import *
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'Super_Secret'
 app.config['WTF_CSRF_SECRET_KEY'] = "b'f\xfa\x8b{X\x8b\x9eM\x83l\x19\xad\x84\x08\xaa"
+#  Initialize Flask-socketIO
 socketio = SocketIO(app)
 
 # configure database
@@ -21,6 +22,7 @@ db = SQLAlchemy(app)
 # Configure flask login
 login = LoginManager(app)
 login.init_app(app)
+
 
 @login.user_loader
 def load_user(id):
@@ -75,7 +77,12 @@ def logout():
     flash("You have logged out successfuly", "success")
     return redirect(url_for('login'))
 
+# server-side event handler to recivie messages
+@socketio.on('message')
+def message(data):
+    print(f"\n\n{data}\n\n")
+    send(data)
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    socketio.run(app)
