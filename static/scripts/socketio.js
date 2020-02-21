@@ -1,7 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Connect to websocket
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-    let room;
+
+    // make lounge is a default room
+    //  and add the user to it
+    let room = 'Lounge';
+    joinRoom("Lounge")
+
+
     // recieve message from the server
     // Create a pragraph contains username, data and time
     socket.on('message', data => {
