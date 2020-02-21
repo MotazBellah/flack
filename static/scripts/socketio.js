@@ -38,6 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
         socket.send({'msg': document.querySelector('#user_message').value,
                      'username': username, 'room': room
                  });
+        // Clear input area
+        document.querySelector('#user_message').value = '';
 
     }
 
