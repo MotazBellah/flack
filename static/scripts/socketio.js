@@ -81,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const p = document.createElement('p');
         p.innerHTML = msg;
         document.querySelector("#display-message-section").append(p)
+        document.querySelector("#user_message").focus();
     }
 
 
