@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
     // recieve message from the server
+    // Create a pragraph contains username, data and time
     socket.on('message', data => {
         const p = document.createElement('p');
         const span_username = document.createElement('span');
