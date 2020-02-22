@@ -12,11 +12,14 @@
         {{ displayField(form.username, 'User name', autocomplete='off',autofocus=true) }}
         {{ displayField(form.password, 'Password') }}
 
-        <div>
-            {{ form.submit_button }}
+        <div class="form-group">
+            <input type="submit" value="Login" class="btn btn-warning">
         </div>
 
         {{ form.csrf_token }}
 
     </form>
+
+    <p>Have not registered? <a href="{{url_for('index')}}">Register here</a>.</p>
+
 {% endblock %}
