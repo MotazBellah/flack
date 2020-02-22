@@ -80,11 +80,16 @@ def logout():
     return redirect(url_for('login'))
 
 # server-side event handler to recivie/send messages
-@socketio.on('message')
-def message(data):
-    # print(f"\n\n{data}\n\n")
-    send({'msg': data['msg'], 'username': data['username'],
-          'time_stamp': strftime('%b-%d %I:%M%p', localtime())}, room=data['room'])
+@socketio.on('incoming-msg')
+def on_message(data):
+    """Broadcast messages"""
+
+    msg = data["msg"]
+    username = data["username"]
+    room = data["room"]
+    # Set timestamp
+    time_stamp = time.strftime('%b-%d %I:%M%p', time.localtime())
+    send({"username": username, "msg": msg, "time_stamp": time_stamp}, room=room)
 
 
 # server-side event handler to join the room
