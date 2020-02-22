@@ -64,3 +64,19 @@ input[type='text']:focus, input[type='password']:focus {
     border-color: #ffc107;
     box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.075) inset, 0px 0px 10px #ffc107;
 }​
+
+
+@media (max-width: 588px) {
+    picture {
+        display: none;
+    }
+    #righthand-side {
+        padding-left: 1.5em;
+    }
+}
+
+@media (min-width: 1000px) {
+    #righthand-side {
+        max-width: 50%;
+    }
+}
