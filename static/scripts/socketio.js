@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Display all incoming messages
-    socket.on('message', data => {
+    socket.on('incoming-msg', data => {
 
         // Display current message
         if (data.msg) {
