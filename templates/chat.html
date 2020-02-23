@@ -10,33 +10,56 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/chat_style.css') }}">
     </head>
     <body>
-        <!-- Navigation bar -->
-        <nav>
 
-        </nav>
+        <div class="wrapper">
+            <!-- Nav bar start -->
+            <nav class="navbar navbar-expand-sm navbar-light fixed-top" style="background-color: #66a1ee">
 
-        <div id="main-section">
-            <!-- Room selection -->
-            <nav id="sidebar">
-                <h4>ROOMS</h4>
-                    {% for room in rooms %}
-                        <p class="select-room">{{ room|title }}</p>
-                    {% endfor %}
+                <div class="container-fluid">
+                    <div id="show-sidebar-button" class="cursor-pointer">
+                        <i class="fas fa-plus-circle "></i>
+                        <span>Rooms</span>
+                    </div>
 
-
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a id="logout-btn" class="nav-link" href="{{ url_for('logout') }}"><span style="color: #335177">Logout</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </nav>
-            <!-- Message area -->
-            <div id="rightside-pannel">
-                <!-- Display message -->
-                <div id="display-message-section">
+            <!-- Nav bar end -->
 
+            <div id="main-section">
+                <!-- Room selection -->
+                <nav id="sidebar">
+                    <h4>ROOMS</h4>
+                        {% for room in rooms %}
+                            <p class="select-room">{{ room|title }}</p>
+                        {% endfor %}
+
+
+                </nav>
+                <!-- Message area -->
+                <div id="rightside-pannel">
+                    <!-- Display message -->
+                    <div id="display-message-section">
+
+                    </div>
+                    <!-- Input message -->
+                    <div id="input-area">
+                        <input type="text" id="user_message" placeholder="Type here...">
+                        <button type="button" id="send_message">SEND</button>
+                    </div>
                 </div>
-                <!-- Input message -->
-                <div id="input-area">
-                    <input type="text" id="user_message" placeholder="Type here...">
-                    <button type="button" id="send_message">SEND</button>
-                </div>
+
             </div>
+
 
         </div>
 
