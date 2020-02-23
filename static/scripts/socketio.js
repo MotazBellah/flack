@@ -12,14 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Send messages
     document.querySelector('#send_message').onclick = () => {
-        socket.emit('incoming-msg', {'msg': document.querySelector('#user_message').value,
-            'username': username, 'room': room});
+        socket.send({'msg': document.querySelector('#user_message').value,
+                     'username': username, 'room': room
+                 });
 
         document.querySelector('#user_message').value = '';
     };
 
     // Display all incoming messages
-    socket.on('incoming-msg', data => {
+    socket.on('message', data => {
 
         // Display current message
         if (data.msg) {

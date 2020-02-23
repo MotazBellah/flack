@@ -80,7 +80,7 @@ def logout():
     return redirect(url_for('login'))
 
 # server-side event handler to recivie/send messages
-@socketio.on('incoming-msg')
+@socketio.on('message')
 def on_message(data):
     """Broadcast messages"""
 
