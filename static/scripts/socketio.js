@@ -18,6 +18,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // If user write message in one of the room
         if(data.username){
+            p.setAttribute("class", "my-msg");
+            span_username.setAttribute("class", "my-username");
+            span_timestamp.setAttribute("class", "timestamp");
+            
             span_username.innerHTML = data.username;
             span_timestamp.innerHTML = data.time_stamp;
             p.innerHTML = span_username.outerHTML + br.outerHTML +
