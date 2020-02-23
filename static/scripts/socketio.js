@@ -35,11 +35,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Username
                     span_username.setAttribute("class", "my-username");
-                    span_username.innerText = data.username;
+                    span_username.innerHTML = data.username;
 
                     // Timestamp
                     span_timestamp.setAttribute("class", "timestamp");
-                    span_timestamp.innerText = data.time_stamp;
+                    span_timestamp.innerHTML = data.time_stamp;
 
                     // HTML to append
                     p.innerHTML += span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML
@@ -53,11 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Username
                 span_username.setAttribute("class", "other-username");
-                span_username.innerText = data.username;
+                span_username.innerHTML = data.username;
 
                 // Timestamp
                 span_timestamp.setAttribute("class", "timestamp");
-                span_timestamp.innerText = data.time_stamp;
+                span_timestamp.innerHTML = data.time_stamp;
 
                 // HTML to append
                 p.innerHTML += span_username.outerHTML + br.outerHTML + data.msg + br.outerHTML + span_timestamp.outerHTML;
