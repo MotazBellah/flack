@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Send messages
     document.querySelector('#send_message').onclick = () => {
+        alert('h')
         socket.send({'msg': document.querySelector('#user_message').value,
                      'username': username, 'room': room
                  });
