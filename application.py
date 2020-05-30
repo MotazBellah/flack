@@ -1,6 +1,6 @@
 import os
 from time import localtime, strftime
-from flask import Flask, render_template, redirect, url_for, flash
+from flask import Flask, render_template, redirect, url_for, flash, request
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from passlib.hash import pbkdf2_sha256
 from flask_socketio import SocketIO, emit, send, join_room, leave_room
@@ -73,13 +73,21 @@ def chat():
     return render_template('chat.html', username=current_user.username, rooms=ROOMS)
 
 
-# @app.route('/chat', methods=['GET', 'POST'])
-# def chat():
-#     if not current_user.is_authenticated:
-#         flash("Please login", 'danger')
-#         return redirect(url_for('login'))
-#
-#     return render_template('chat.html', username=current_user.username, rooms=ROOMS)
+@app.route('/create', methods=['POST'])
+def create():
+    if not current_user.is_authenticated:
+        flash("Please login", 'danger')
+        return redirect(url_for('login'))
+
+    room = request.form['room']
+    print('/////////////////')
+    print(room)
+    print('/////////////////')
+    if room in ROOMS:
+        return redirect(url_for('chat'))
+
+    ROOMS.append(room)
+    return redirect(url_for('chat'))
 
 
 @app.route('/logout', methods=['GET'])

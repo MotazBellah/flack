@@ -18,7 +18,16 @@ document.addEventListener("DOMContentLoaded", () =>{
     document.querySelector('#create-room').onclick = () => {
         const room = prompt("Please enter the name of the room");
         if (room != null){
-            alert(room)
+            $.ajax({
+                type: 'post',
+                url: '/create',
+                data: {
+                    room: room
+                },
+                success: function() {
+                    alert("New Room Created")
+                }
+            });
         }
     };
 })
