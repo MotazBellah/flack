@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () =>{
                     console.log(p);
                     rooms.appendChild(p)
                     console.log(rooms);
-                    window.location.href = "/chat"
+                    // window.location.href = "/chat"
                 }
             });
         }
