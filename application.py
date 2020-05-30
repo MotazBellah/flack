@@ -17,7 +17,7 @@ socketio = SocketIO(app)
 ROOMS = ['lounge', 'news', 'games', 'coding']
 
 # configure database
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///chat.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -71,6 +71,15 @@ def chat():
         return redirect(url_for('login'))
 
     return render_template('chat.html', username=current_user.username, rooms=ROOMS)
+
+
+# @app.route('/chat', methods=['GET', 'POST'])
+# def chat():
+#     if not current_user.is_authenticated:
+#         flash("Please login", 'danger')
+#         return redirect(url_for('login'))
+#
+#     return render_template('chat.html', username=current_user.username, rooms=ROOMS)
 
 
 @app.route('/logout', methods=['GET'])

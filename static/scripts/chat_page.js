@@ -14,4 +14,11 @@ document.addEventListener("DOMContentLoaded", () =>{
             document.querySelector('#send_message').click();
         }
     });
+
+    document.querySelector('#create-room').onclick = () => {
+        const room = prompt("Please enter the name of the room");
+        if (room != null){
+            alert(room)
+        }
+    };
 })
