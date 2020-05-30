@@ -30,7 +30,10 @@ document.addEventListener("DOMContentLoaded", () =>{
                     var p = document.createElement('p')
                     p.textContent = room
                     p.className = 'select-room'
+                    console.log(p);
                     rooms.appendChild(p)
+                    console.log(rooms);
+                    window.location.href = "/chat"
                 }
             });
         }
