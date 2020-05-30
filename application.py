@@ -1,6 +1,6 @@
 import os
 from time import localtime, strftime
-from flask import Flask, render_template, redirect, url_for, flash, request
+from flask import Flask, render_template, redirect, url_for, flash, request, session
 from flask_login import LoginManager, login_user, current_user, login_required, logout_user
 from passlib.hash import pbkdf2_sha256
 from flask_socketio import SocketIO, emit, send, join_room, leave_room
@@ -88,7 +88,7 @@ def create():
 
     ROOMS.append(room)
     print(ROOMS)
-    return redirect(url_for('chat'))
+    return redirect(url_for('chat', rooms=ROOMS))
 
 
 @app.route('/logout', methods=['GET'])
