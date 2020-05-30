@@ -26,7 +26,11 @@ document.addEventListener("DOMContentLoaded", () =>{
                 },
                 success: function() {
                     alert("New Room Created")
-                    window.location.href = "/chat"
+                    var rooms = document.querySelector('#rooms')
+                    var p = document.createElement('p')
+                    p.textContent = room
+                    p.className = 'select-room'
+                    rooms.appendChild(p)
                 }
             });
         }

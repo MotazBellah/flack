@@ -39,9 +39,11 @@
                 <!-- Room selection -->
                 <nav id="sidebar">
                     <h4>ROOMS</h4>
-                        {% for room in rooms %}
-                            <p class="select-room">{{ room|title }}</p>
-                        {% endfor %}
+                        <div id="rooms">
+                            {% for room in rooms %}
+                                <p class="select-room">{{ room|title }}</p>
+                            {% endfor %}
+                        </div>
                     <a id="create-room" href="#" class="btn btn-primary">Create Room</a>
                 </nav>
                 <!-- Message area -->
