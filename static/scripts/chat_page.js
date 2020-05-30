@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", () =>{
                 },
                 success: function() {
                     alert("New Room Created")
+                    window.location.href = "/chat"
                 }
             });
         }
