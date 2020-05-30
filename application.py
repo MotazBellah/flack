@@ -88,7 +88,7 @@ def create():
 
     ROOMS.append(room)
     print(ROOMS)
-    return redirect(url_for('chat', rooms=ROOMS))
+    return render_template('chat.html', username=current_user.username, rooms=ROOMS)
 
 
 @app.route('/logout', methods=['GET'])
