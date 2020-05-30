@@ -69,7 +69,7 @@ def chat():
     if not current_user.is_authenticated:
         flash("Please login", 'danger')
         return redirect(url_for('login'))
-
+    print(ROOMS)
     return render_template('chat.html', username=current_user.username, rooms=ROOMS)
 
 
@@ -87,6 +87,7 @@ def create():
         return redirect(url_for('chat'))
 
     ROOMS.append(room)
+    print(ROOMS)
     return redirect(url_for('chat'))
 
 
