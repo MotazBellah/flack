@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         joinRoom(room)
     } else {
         console.log(room);
-        alert("Please create a room to start chatting")
+        // alert("Please create a room to start chatting")
         document.querySelector('#send_message').display = true;
         // document.querySelector("#input-area").style.display = "none";
     }

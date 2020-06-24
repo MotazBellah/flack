@@ -24,6 +24,14 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['WTF_CSRF_SECRET_KEY'] = "b'f\xfa\x8b{X\x8b\x9eM\x83l\x19\xad\x84\x08\xaa"
 db = SQLAlchemy(app)
 
+
+# manage a database connection
+# To avaid time errors
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.remove()
+
+    
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
