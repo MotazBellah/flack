@@ -16,14 +16,13 @@ document.addEventListener("DOMContentLoaded", () => {
         joinRoom(room)
     } else {
         console.log(room);
-        // alert("Please create a room to start chatting")
+        alert("Please create a room to start chatting")
         document.querySelector('#send_message').display = true;
         // document.querySelector("#input-area").style.display = "none";
     }
 
 
     function displayMessage(data) {
-        // console.log(data);
         const p = document.createElement('p');
         const span_username = document.createElement('span');
         const span_data = document.createElement('span');
@@ -162,12 +161,10 @@ document.addEventListener("DOMContentLoaded", () => {
             success: function(response) {
                 // alert("Room")
                 // displayMessage(data);
-                console.log(response.length);
-                // console.log(response['message'][0]);
-                // console.log(response['message']);
-                for (var i = 0; i < response.length; i++) {
-                    console.log(response[i])
-                    displayMessage(response[i])
+                console.log(response);
+                for (var i = 0; i < response['messages'].length; i++) {
+                    console.log(response['messages'][i])
+                    displayMessage(response['messages'][i])
                 }
             }
         });
