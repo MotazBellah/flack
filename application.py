@@ -18,11 +18,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 socketio = SocketIO(app)
 
 
+
 UPLOAD_FOLDER = './static/uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['WTF_CSRF_SECRET_KEY'] = "b'f\xfa\x8b{X\x8b\x9eM\x83l\x19\xad\x84\x08\xaa"
 db = SQLAlchemy(app)
+
+# Configure flask login
+login = LoginManager(app)
+login.init_app(app)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -46,25 +51,65 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return jsonify({'filename': filename})
 
+
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
 
 
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
+
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    login = 'loggedout'
-    username = ''
-    if 'username' in session:
-        login = 'loggedin'
-        username = session['username']
-    else:
+    reg_form = RegistrationForm()
+    if reg_form.validate_on_submit():
+        username = reg_form.username.data
+        password = reg_form.password.data
+        # hash the password, and save it in db
+        hashed_pswd = pbkdf2_sha256.hash(password)
+
+        # Add user to DB
+        user = User(username=username, password=hashed_pswd)
+        db.session.add(user)
+        db.session.commit()
+
+        flash("Registered succesfully. Please login.", 'success')
         return redirect(url_for('login'))
 
+    return render_template('index.html', form=reg_form)
+
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    login_form = LoginForm()
+
+    # Allow login if validation success
+    if login_form.validate_on_submit():
+        user_object = User.query.filter_by(username=login_form.username.data).first()
+        login_user(user_object)
+        return redirect(url_for('chat'))
+
+    return render_template('login.html', form=login_form)
+
+
+@app.route("/chat", methods=['GET', 'POST'])
+def index():
+    if not current_user.is_authenticated:
+        login = 'loggedout'
+        username = ''
+        flash("Please login", 'danger')
+        return redirect(url_for('login'))
+    login = 'loggedin'
+    username = ''
+    Id_user = current_user.get_id()
+
     ROOMS = Room.query.all()
-    # print('!!!!!!!!!!!!!!!!!!!!!!')
-    # print(ROOMS)
+    print('!!!!!!!!!!!!!!!!!!!!!!')
+    print(Id_user)
 
     return render_template('chat.html', username=username, login=login, ROOMS=ROOMS)
 
