@@ -111,7 +111,7 @@ def chat():
 
     ROOMS = Room.query.all()
     print('!!!!!!!!!!!!!!!!!!!!!!')
-    print(Id_user)
+    print(username)
 
     return render_template('chat.html', username=username, login=login, ROOMS=ROOMS)
 
