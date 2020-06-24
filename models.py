@@ -24,6 +24,7 @@ class Message(db.Model):
     __tablename__ = 'message'
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String())
+    username = db.Column(db.String(25))
     time = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     room_id = db.Column(db.Integer, db.ForeignKey('room.id'))
     room = db.relationship(Room)
@@ -31,6 +32,7 @@ class Message(db.Model):
     @property
     def serialize(self):
         return {
-            'text': self.text,
-            'time': self.time,
+            'msg': self.text,
+            'time_stamp': self.time,
+            'username': self.username,
             }

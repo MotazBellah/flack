@@ -61,8 +61,8 @@ def index():
         return redirect(url_for('login'))
 
     ROOMS = Room.query.all()
-    print('!!!!!!!!!!!!!!!!!!!!!!')
-    print(ROOMS)
+    # print('!!!!!!!!!!!!!!!!!!!!!!')
+    # print(ROOMS)
 
     return render_template('chat.html', username=username, login=login, ROOMS=ROOMS)
 
@@ -77,9 +77,9 @@ def get_rooms():
     #     return jsonify({'rooms': ROOMS})
     # else:
     room = request.form['room'].lower()
-    user_object = Room.query.filter_by(name=room).first()
+    room_object = Room.query.filter_by(name=room).first()
 
-    if user_object:
+    if room_object:
         return jsonify({'error': 'Room existed'})
 
     room = Room(name=room)
@@ -99,11 +99,17 @@ def get_messages():
 
     text = []
     room = request.form['room'].lower()
+    room_object = Room.query.filter_by(name=room).first()
+    c = Message.query.filter_by(room_id=room_object.id).all()
+    print('%%%%%%%%%%%%%%%%%%%%')
+    print(c)
+    print(room_object.id)
+    print([i.serialize for i in c])
 
-    if room in mesage:
-        return jsonify({'messages': mesage[room]})
+    # if room in mesage:
+    #     return jsonify({'messages': mesage[room]})
 
-    return jsonify({'messages': []})
+    return jsonify([i.serialize for i in c])
 
 
 @app.route('/login',methods=['GET','POST'])
@@ -125,13 +131,17 @@ def logout():
 @socketio.on('message')
 def message(data):
     x = data
+    print('&&&&&&&&&&&&&&&&&&&&&&&&&&7')
+    print(x)
+    print(data['msg'])
+    print('&&&&&&&&&&&&&&&&&&&&&&&&&&7')
     x['time_stamp'] = strftime('%b-%d %I:%M%p', localtime())
-    if data['room'] in mesage:
-        if len(mesage[data['room'].lower()]) < 5:
-            mesage[data['room'].lower()].append(x)
-        else:
-            mesage[data['room'].lower()].pop(0)
-            mesage[data['room'].lower()].append(x)
+
+    room_object = Room.query.filter_by(name=data['room'].lower()).first()
+    y = Message(text=data['msg'], room_id=room_object.id, username=data['username'])
+    db.session.add(y)
+    db.session.commit()
+
 
     send({'msg': data['msg'], 'username': data['username'],
           'time_stamp': strftime('%b-%d %I:%M%p', localtime())}, room=data['room'].lower())
@@ -156,8 +166,10 @@ def leave(data):
 @socketio.on("create room")
 def create(data):
     room = data["room"]
-    join_room(room)
-    emit("creation", {"room": room}, broadcast=True)
+    room_object = Room.query.filter_by(name=room).first()
+    if not room_object:
+        join_room(room)
+        emit("creation", {"room": room}, broadcast=True)
 
 
 if __name__ == '__main__':
