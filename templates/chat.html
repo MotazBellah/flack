@@ -38,11 +38,14 @@
             <div id="main-section">
                 <!-- Room selection -->
                 <nav id="sidebar">
+                    <div id="user-name">
+                        <p><strong>{{ username }}, Let's chatting</strong></p>
+                    </div>
                     <h4>ROOMS</h4>
                         <div id="rooms">
-                            {% if rooms %}
-                                {% for room in rooms %}
-                                    <p class="select-room">{{ room.name }}</p>
+                            {% if ROOMS %}
+                                {% for room in ROOMS %}
+                                    <p class="select-room">{{ room }}</p>
                                 {% endfor %}
                             {% else %}
                                 <p>Please create a room to start chatting</p>
@@ -65,7 +68,12 @@
                             <button id="send_message" class="btn btn-warning" type="button">SEND <i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
+                    <form  id="send_file_form" enctype="multipart/form-data" method="post">
+                        <input  id="user_file" type='file' name="file">
+                        <input class="btn btn-warning" type='submit' value='Upload'>
+                    </form>
                     <!-- Type message end -->
+
                 </div>
 
             </div>
@@ -76,6 +84,8 @@
         <!-- Get username -->
         <script type="text/javascript">
             const username = `{{ username }}`;
+            var login = `{{ login }}`;
+            // var x = `{{mesage}}`
         </script>
 
         <!-- Custom chat JS -->
