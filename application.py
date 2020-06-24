@@ -159,17 +159,9 @@ def get_messages():
     return jsonify([i.serialize for i in c])
 
 
-@app.route('/login',methods=['GET','POST'])
-def login():
-    if request.method=='POST':
-        session['username']=request.form['username']
-        return redirect(url_for('index'))
-    return render_template('login.html')
-
-
-@app.route('/logout')
+@app.route('/logout', methods=['GET'])
 def logout():
-    session.pop('username',None)
+    logout_user()
     flash("You have logged out successfuly", "success")
     return redirect(url_for('login'))
 
