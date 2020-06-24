@@ -95,6 +95,7 @@ def get_rooms():
     new_room = Room(name=room)
     db.session.add(new_room)
     db.session.commit()
+    db.session.remove()
     print('!!!!!!!!!!!!!!!!!!!!!!!1')
     print(room)
         # if room not in ROOMS:
@@ -153,6 +154,7 @@ def message(data):
     y = Message(text=data['msg'], room_id=room_object.id, username=data['username'])
     db.session.add(y)
     db.session.commit()
+    db.session.remove()
 
 
     send({'msg': data['msg'], 'username': data['username'],
