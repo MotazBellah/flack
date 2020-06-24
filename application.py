@@ -82,6 +82,7 @@ def index():
         user = User(username=username, password=hashed_pswd)
         db.session.add(user)
         db.session.commit()
+        db.session.close()
         db.session.remove()
 
         flash("Registered succesfully. Please login.", 'success')
@@ -97,6 +98,8 @@ def login():
     # Allow login if validation success
     if login_form.validate_on_submit():
         user_object = User.query.filter_by(username=login_form.username.data).first()
+        db.session.close()
+        db.session.remove()
         login_user(user_object)
         return redirect(url_for('chat'))
 
@@ -118,6 +121,8 @@ def chat():
     ROOMS = Room.query.all()
     # print('!!!!!!!!!!!!!!!!!!!!!!')
     # print(ROOMS)
+    db.session.close()
+    db.session.remove()
 
     return render_template('chat.html', username=username, login=login, ROOMS=ROOMS)
 
@@ -140,6 +145,7 @@ def get_rooms():
     new_room = Room(name=room)
     db.session.add(new_room)
     db.session.commit()
+    db.session.close()
     db.session.remove()
     print('!!!!!!!!!!!!!!!!!!!!!!!1')
     print(room)
@@ -163,6 +169,8 @@ def get_messages():
     print(c)
     print(room_object.id)
     print([i.serialize for i in c])
+    db.session.close()
+    db.session.remove()
 
     # if room in mesage:
     #     return jsonify({'messages': mesage[room]})
@@ -191,6 +199,7 @@ def message(data):
     y = Message(text=data['msg'], room_id=room_object.id, username=data['username'])
     db.session.add(y)
     db.session.commit()
+    db.session.close()
     db.session.remove()
 
 
