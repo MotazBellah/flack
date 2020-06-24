@@ -29,9 +29,9 @@ db = SQLAlchemy(app)
 # To avaid time errors
 @app.teardown_appcontext
 def shutdown_session(exception=None):
-    db.remove()
+    db.session.remove()
 
-    
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
