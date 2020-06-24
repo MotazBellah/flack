@@ -12,8 +12,8 @@ from wtform_fields import *
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'Super_secret_key'
-# app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://syoilhbljjrvyv:35d64a02935af3684ac54adac250d21422a8e5c35b2d2d68bbfe87c9f79c097c@ec2-52-200-119-0.compute-1.amazonaws.com:5432/deevouk6kecicj"
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///chat.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://syoilhbljjrvyv:35d64a02935af3684ac54adac250d21422a8e5c35b2d2d68bbfe87c9f79c097c@ec2-52-200-119-0.compute-1.amazonaws.com:5432/deevouk6kecicj"
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///chat.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 socketio = SocketIO(app)
 
@@ -84,9 +84,11 @@ def get_rooms():
     if room_object:
         return jsonify({'error': 'Room existed'})
 
-    room = Room(name=room)
-    db.session.add(room)
+    new_room = Room(name=room)
+    db.session.add(new_room)
     db.session.commit()
+    print('!!!!!!!!!!!!!!!!!!!!!!!1')
+    print(room)
         # if room not in ROOMS:
         #     ROOMS.append(room)
         #     mesage[room] = []
@@ -152,10 +154,10 @@ def message(data):
 # server-side event handler to join the room
 @socketio.on('join')
 def join(data):
-    # ROOMS = Room.query.filter_by(name=data['room']).first()
-    # if ROOMS:
-    join_room(data['room'])
-    send({"msg": data['username'] + " has joined the " + data['room'] + " room."}, room=data['room'])
+    ROOMS = Room.query.filter_by(name=data['room']).first()
+    if ROOMS:
+        join_room(data['room'])
+        send({"msg": data['username'] + " has joined the " + data['room'] + " room."}, room=data['room'])
 
 
 
