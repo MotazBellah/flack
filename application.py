@@ -93,6 +93,8 @@ def chat():
 
 @app.route('/get-rooms', methods=['POST'])
 def get_rooms():
+    print('%%%%%%%%%%%%%%%%%')
+    
     if 'username' not in session:
         flash("Please login", 'danger')
         return redirect(url_for('login'))

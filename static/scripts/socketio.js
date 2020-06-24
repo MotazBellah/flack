@@ -93,8 +93,9 @@ document.addEventListener("DOMContentLoaded", () => {
           document.querySelector('#create-room').onclick = () => {
               const room = prompt("Please enter the name of the room");
               if (room != null){
-                socket.emit('create room', {'room': room});
 
+                socket.emit('create room', {'room': room});
+                console.log(room);
                 $.ajax({
                     type: 'POST',
                     url: '/get-rooms',
