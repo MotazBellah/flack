@@ -4,22 +4,26 @@ from flask import Flask, render_template, redirect, url_for, flash, request, ses
 from flask_socketio import SocketIO, emit, send, join_room, leave_room
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from passlib.hash import pbkdf2_sha256
 from models import *
+from wtform_fields import *
 
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'Super_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://syoilhbljjrvyv:35d64a02935af3684ac54adac250d21422a8e5c35b2d2d68bbfe87c9f79c097c@ec2-52-200-119-0.compute-1.amazonaws.com:5432/deevouk6kecicj"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///chat.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 socketio = SocketIO(app)
 #  Create predefined rooms
 # ROOMS = []
-mesage = {}
+# mesage = {}
 
 UPLOAD_FOLDER = './static/uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-# app.config['WTF_CSRF_SECRET_KEY'] = "b'f\xfa\x8b{X\x8b\x9eM\x83l\x19\xad\x84\x08\xaa"
+app.config['WTF_CSRF_SECRET_KEY'] = "b'f\xfa\x8b{X\x8b\x9eM\x83l\x19\xad\x84\x08\xaa"
 db = SQLAlchemy(app)
 
 def allowed_file(filename):
@@ -150,10 +154,11 @@ def message(data):
 # server-side event handler to join the room
 @socketio.on('join')
 def join(data):
-    # ROOMS = Room.query.all()
-    # if ROOMS:
-    join_room(data['room'])
-    send({"msg": data['username'] + " has joined the " + data['room'] + " room."}, room=data['room'])
+    ROOMS = Room.query.filter_by(name=data['room']).first()
+    if ROOMS:
+        join_room(data['room'])
+        send({"msg": data['username'] + " has joined the " + data['room'] + " room."}, room=data['room'])
+
 
 
 # server-side event handler to leave the room
