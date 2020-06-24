@@ -171,10 +171,10 @@ def leave(data):
 @socketio.on("create room")
 def create(data):
     room = data["room"]
-    room_object = Room.query.filter_by(name=room).first()
-    if not room_object:
-        join_room(room)
-        emit("creation", {"room": room}, broadcast=True)
+    # room_object = Room.query.filter_by(name=room).first()
+    # if not room_object:
+    join_room(room)
+    emit("creation", {"room": room}, broadcast=True)
 
 
 if __name__ == '__main__':
