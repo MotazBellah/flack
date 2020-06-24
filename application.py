@@ -4,20 +4,23 @@ from flask import Flask, render_template, redirect, url_for, flash, request, ses
 from flask_socketio import SocketIO, emit, send, join_room, leave_room
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
+from models import *
 
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'Super_secret_key'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chat.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 socketio = SocketIO(app)
 #  Create predefined rooms
-ROOMS = []
+# ROOMS = []
 mesage = {}
 
 UPLOAD_FOLDER = './static/uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # app.config['WTF_CSRF_SECRET_KEY'] = "b'f\xfa\x8b{X\x8b\x9eM\x83l\x19\xad\x84\x08\xaa"
-
+db = SQLAlchemy(app)
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -57,6 +60,10 @@ def index():
     else:
         return redirect(url_for('login'))
 
+    ROOMS = Room.query.all()
+    print('!!!!!!!!!!!!!!!!!!!!!!')
+    print(ROOMS)
+
     return render_template('chat.html', username=username, login=login, ROOMS=ROOMS)
 
 
@@ -66,14 +73,21 @@ def get_rooms():
         flash("Please login", 'danger')
         return redirect(url_for('login'))
 
-    if request.method == "GET":
-        return jsonify({'rooms': ROOMS})
-    else:
-        room = request.form['room'].lower()
+    # if request.method == "GET":
+    #     return jsonify({'rooms': ROOMS})
+    # else:
+    room = request.form['room'].lower()
+    user_object = Room.query.filter_by(name=room).first()
 
-        if room not in ROOMS:
-            ROOMS.append(room)
-            mesage[room] = []
+    if user_object:
+        return jsonify({'error': 'Room existed'})
+
+    room = Room(name=room)
+    db.session.add(room)
+    db.session.commit()
+        # if room not in ROOMS:
+        #     ROOMS.append(room)
+        #     mesage[room] = []
 
     return jsonify({'success': 'Room created'})
 
@@ -126,9 +140,10 @@ def message(data):
 # server-side event handler to join the room
 @socketio.on('join')
 def join(data):
-    if ROOMS:
-        join_room(data['room'])
-        send({"msg": data['username'] + " has joined the " + data['room'] + " room."}, room=data['room'])
+    # ROOMS = Room.query.all()
+    # if ROOMS:
+    join_room(data['room'])
+    send({"msg": data['username'] + " has joined the " + data['room'] + " room."}, room=data['room'])
 
 
 # server-side event handler to leave the room
