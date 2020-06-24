@@ -110,8 +110,8 @@ def chat():
 
 
     ROOMS = Room.query.all()
-    print('!!!!!!!!!!!!!!!!!!!!!!')
-    print(username)
+    # print('!!!!!!!!!!!!!!!!!!!!!!')
+    # print(username)
 
     return render_template('chat.html', username=username, login=login, ROOMS=ROOMS)
 
@@ -151,9 +151,9 @@ def get_messages():
     room_object = Room.query.filter_by(name=room).first()
     c = Message.query.filter_by(room_id=room_object.id).all()
     print('%%%%%%%%%%%%%%%%%%%%')
-    print(c)
-    print(room_object.id)
-    print([i.serialize for i in c])
+    # print(c)
+    # print(room_object.id)
+    # print([i.serialize for i in c])
 
     # if room in mesage:
     #     return jsonify({'messages': mesage[room]})
@@ -191,10 +191,10 @@ def message(data):
 # server-side event handler to join the room
 @socketio.on('join')
 def join(data):
-    ROOMS = Room.query.filter_by(name=data['room']).first()
-    if ROOMS:
-        join_room(data['room'])
-        send({"msg": data['username'] + " has joined the " + data['room'] + " room."}, room=data['room'])
+    # ROOMS = Room.query.filter_by(name=data['room']).first()
+    # if ROOMS:
+    join_room(data['room'])
+    send({"msg": data['username'] + " has joined the " + data['room'] + " room."}, room=data['room'])
 
 
 
