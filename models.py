@@ -28,7 +28,7 @@ class Message(db.Model):
     __tablename__ = 'message'
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(250), nullable=False)
-    time = Column(db.DateTime, default=datetime.datetime.utcnow)
+    time = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)
     room = db.relationship(Room)
     # time = db.Column(db.String(250), default=datetime.now(timezone.utc).astimezone().strftime("%a, %d %b %Y %H:%M:%S"))
