@@ -24,11 +24,20 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['WTF_CSRF_SECRET_KEY'] = "b'f\xfa\x8b{X\x8b\x9eM\x83l\x19\xad\x84\x08\xaa"
 db = SQLAlchemy(app)
 
+# Configure flask login
+login = LoginManager(app)
+login.init_app(app)
+
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 # manage a database connection
 # To avaid time errors
 @app.teardown_appcontext
 def shutdown_session(exception=None):
+    db.session.close()
     db.session.remove()
 
 
@@ -62,13 +71,49 @@ def uploaded_file(filename):
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    login = 'loggedout'
-    username = ''
-    if 'username' in session:
-        login = 'loggedin'
-        username = session['username']
-    else:
+    reg_form = RegistrationForm()
+    if reg_form.validate_on_submit():
+        username = reg_form.username.data
+        password = reg_form.password.data
+        # hash the password, and save it in db
+        hashed_pswd = pbkdf2_sha256.hash(password)
+
+        # Add user to DB
+        user = User(username=username, password=hashed_pswd)
+        db.session.add(user)
+        db.session.commit()
+        db.session.remove()
+
+        flash("Registered succesfully. Please login.", 'success')
         return redirect(url_for('login'))
+
+    return render_template('index.html', form=reg_form)
+
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    login_form = LoginForm()
+
+    # Allow login if validation success
+    if login_form.validate_on_submit():
+        user_object = User.query.filter_by(username=login_form.username.data).first()
+        login_user(user_object)
+        return redirect(url_for('chat'))
+
+    return render_template('login.html', form=login_form)
+
+
+@app.route("/chat", methods=['GET', 'POST'])
+def chat():
+    if not current_user.is_authenticated:
+        login = 'loggedout'
+        username = ''
+        flash("Please login", 'danger')
+        return redirect(url_for('login'))
+
+    login = 'loggedin'
+    user_id = current_user.get_id()
+    username = User.query.filter_by(id=user_id).first().username
 
     ROOMS = Room.query.all()
     # print('!!!!!!!!!!!!!!!!!!!!!!')
@@ -125,17 +170,9 @@ def get_messages():
     return jsonify([i.serialize for i in c])
 
 
-@app.route('/login',methods=['GET','POST'])
-def login():
-    if request.method=='POST':
-        session['username']=request.form['username']
-        return redirect(url_for('index'))
-    return render_template('login.html')
-
-
-@app.route('/logout')
+@app.route('/logout', methods=['GET'])
 def logout():
-    session.pop('username',None)
+    logout_user()
     flash("You have logged out successfuly", "success")
     return redirect(url_for('login'))
 
