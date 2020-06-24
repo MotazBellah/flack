@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
             p.setAttribute("class", "my-msg");
             span_username.setAttribute("class", "my-username");
             span_timestamp.setAttribute("class", "timestamp");
-            
+
             span_username.innerHTML = data.username;
             span_timestamp.innerHTML = data.time_stamp;
             p.innerHTML = span_username.outerHTML + br.outerHTML +
@@ -87,6 +87,55 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector("#display-message-section").append(p)
         document.querySelector("#user_message").focus();
     }
+
+    // When connected, check rom creation
+      socket.on('connect', () => {
+          document.querySelector('#create-room').onclick = () => {
+              const room = prompt("Please enter the name of the room");
+              if (room != null){
+                socket.emit('create room', {'room': room});
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/get-rooms',
+                    data: {
+                        room: room
+                    },
+                    success: function() {
+
+                        }
+                    });
+
+              }
+          };
+      });
+
+    // Create a room in HTML
+    socket.on('creation', data => {
+        var rooms = document.querySelector('#rooms')
+        var p = document.createElement('p')
+        p.textContent = data.room
+        p.className = 'select-room'
+        console.log(p);
+        rooms.appendChild(p)
+        console.log(rooms);
+        const cx = document.querySelectorAll('.select-room');
+        console.log(cx);
+        cx.forEach((p) => {
+            p.onclick = () => {
+                let newRoom = p.innerHTML;
+                if (newRoom == room){
+                    msg = `You are already in ${room} room.`;
+                    printSysMsg(msg);
+                } else {
+                    leaveRoom(room);
+                    joinRoom(newRoom);
+                    room = newRoom;
+                }
+
+            }
+        });
+    });
 
 
 

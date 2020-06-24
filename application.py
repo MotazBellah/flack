@@ -73,22 +73,41 @@ def chat():
     return render_template('chat.html', username=current_user.username, rooms=ROOMS)
 
 
-@app.route('/create', methods=['POST'])
-def create():
-    if not current_user.is_authenticated:
+# @app.route('/create', methods=['POST'])
+# def create():
+#     if not current_user.is_authenticated:
+#         flash("Please login", 'danger')
+#         return redirect(url_for('login'))
+#
+#     room = request.form['room']
+#     print('/////////////////')
+#     print(room)
+#     print('/////////////////')
+#     if room in ROOMS:
+#         return redirect(url_for('chat'))
+#
+#     ROOMS.append(room)
+#     print(ROOMS)
+#     return redirect(url_for('chat', rooms=ROOMS))
+
+@app.route('/get-rooms', methods=['POST'])
+def get_rooms():
+    if 'username' not in session:
         flash("Please login", 'danger')
         return redirect(url_for('login'))
 
-    room = request.form['room']
-    print('/////////////////')
-    print(room)
-    print('/////////////////')
-    if room in ROOMS:
-        return redirect(url_for('chat'))
+    if request.method == "GET":
+        return jsonify({'rooms': ROOMS})
+    else:
+        room = request.form['room'].lower()
+        room_object = Room.query.filter_by(name=room).first()
 
-    ROOMS.append(room)
-    print(ROOMS)
-    return redirect(url_for('chat', rooms=ROOMS))
+        if not room_object:
+            room = Room(name=room)
+            db.session.add(user)
+            db.session.commit()
+
+    return jsonify({'success': 'Room created'})
 
 
 @app.route('/logout', methods=['GET'])
@@ -119,6 +138,11 @@ def leave(data):
     send({"msg": data['username'] + " has left the " + data['room'] + " room."}, room=data['room'])
 
 
+@socketio.on("create room")
+def create(data):
+    room = data["room"]
+    join_room(room)
+    emit("creation", {"room": room}, broadcast=True)
 
 if __name__ == '__main__':
     socketio.run(app)
