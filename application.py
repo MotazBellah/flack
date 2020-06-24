@@ -103,9 +103,11 @@ def chat():
         username = ''
         flash("Please login", 'danger')
         return redirect(url_for('login'))
-    login = 'loggedin'
-    username = ''
-    Id_user = current_user.get_id()
+    user_id = current_user.get_id()
+    if user_id:
+        login = 'loggedin'
+        username = User.query.filter_by(id=user_id).first().username
+
 
     ROOMS = Room.query.all()
     print('!!!!!!!!!!!!!!!!!!!!!!')
