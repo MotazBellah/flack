@@ -69,8 +69,9 @@ def chat():
     if not current_user.is_authenticated:
         flash("Please login", 'danger')
         return redirect(url_for('login'))
-    print(ROOMS)
-    return render_template('chat.html', username=current_user.username, rooms=ROOMS)
+    rooms = Room.query.all()
+    print(rooms)
+    return render_template('chat.html', username=current_user.username, rooms=rooms)
 
 
 # @app.route('/create', methods=['POST'])
@@ -97,14 +98,21 @@ def get_rooms():
         return redirect(url_for('login'))
 
     if request.method == "GET":
-        return jsonify({'rooms': ROOMS})
+        rooms = Room.query.all()
+        print('####################')
+        print(rooms)
+        print('#####################')
+        # return jsonify({'rooms': ROOMS})
+        return jsonify(rooms=[i.serialize for i in catalogs])
     else:
         room = request.form['room'].lower()
         room_object = Room.query.filter_by(name=room).first()
-
+        print('/////////////////')
+        print(room_object)
+        print('/////////////////')
         if not room_object:
             room = Room(name=room)
-            db.session.add(user)
+            db.session.add(room)
             db.session.commit()
 
     return jsonify({'success': 'Room created'})

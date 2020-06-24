@@ -40,9 +40,13 @@
                 <nav id="sidebar">
                     <h4>ROOMS</h4>
                         <div id="rooms">
-                            {% for room in rooms %}
-                                <p class="select-room">{{ room|title }}</p>
-                            {% endfor %}
+                            {% if rooms %}
+                                {% for room in rooms %}
+                                    <p class="select-room">{{ room.name }}</p>
+                                {% endfor %}
+                            {% else %}
+                                <p>Please create a room to start chatting</p>
+                            {% endif %}
                         </div>
                     <a id="create-room" href="#" class="btn btn-primary">Create Room</a>
                 </nav>
