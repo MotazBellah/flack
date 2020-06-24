@@ -97,7 +97,7 @@ def login():
 
 
 @app.route("/chat", methods=['GET', 'POST'])
-def index():
+def chat():
     if not current_user.is_authenticated:
         login = 'loggedout'
         username = ''
