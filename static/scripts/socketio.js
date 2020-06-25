@@ -78,39 +78,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Get the text on the input field and send it to the server once the button is clicked
     document.querySelector('#send_message').onclick = () => {
-        socket.send({'msg': document.querySelector('#user_message').value,
-                     'username': username, 'room': room
-                 });
-        var x = document.querySelector('#user_message').value
+        // socket.send({'msg': document.querySelector('#user_message').value,
+        //              'username': username, 'room': room
+        //          });
+        var user_message = document.querySelector('#user_message').value
+        $.ajax({
+            type: 'post',
+            url: '/check-profanity',
+            data: {
+                text: user_message
+            },
+            success: function(response) {
+                if ('error' in response) {
+                    var acknowledge = confirm("Your message contains a profanity, do want to send anyway?")
+                    if (acknowledge) {
+                        socket.send({'msg': user_message,
+                                    'username': username, 'room': room
+                                    });
+                        }
 
-      //   var settings = {
-      //     'cache': false,
-      //     'dataType': "jsonp",
-      //     "async": true,
-      //     "crossDomain": true,
-      //     "url": 'http://www.wdylike.appspot.com/?q='+x,
-      //     "method": "POST",
-      //     "headers": {
-      //         "accept": "application/json",
-      //         "Access-Control-Allow-Origin":"*"
-      //     }
-      // }
-      // console.log(settings);
-      // $.ajax(settings).done(function (response) {
-      //     console.log(response);
-      //
-      // });
-
-              $.ajax({
-                  type: 'post',
-                  url: '/check-profanity',
-                  data: {
-                      text: x
-                  },
-                  success: function(response) {
-                      console.log(response);
-                  }
-              });
+                } else {
+                    socket.send({'msg': user_message,
+                                'username': username, 'room': room
+                                });
+                }
+            }
+        });
 
         // Clear input area
         document.querySelector('#user_message').value = '';
