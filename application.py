@@ -134,8 +134,8 @@ def message(data):
     x = data
     x['time_stamp'] = strftime('%b-%d %I:%M%p', localtime())
 
-    if data['room'] in mesage:
-        if len(mesage[data['room'].lower()]) < 5:
+    if data['room'].lower() in ROOMS:
+        if len(mesage[data['room'].lower()]) < 10:
             mesage[data['room'].lower()].append(x)
         else:
             mesage[data['room'].lower()].pop(0)
@@ -148,9 +148,11 @@ def message(data):
 # server-side event handler to join the room
 @socketio.on('join')
 def join(data):
-    if ROOMS:
+    if data['room'] in ROOMS:
         join_room(data['room'])
         send({"msg": data['username'] + " has joined the " + data['room'] + " room."}, room=data['room'])
+    else:
+        leave_room(data['room'])
 
 
 # server-side event handler to leave the room
