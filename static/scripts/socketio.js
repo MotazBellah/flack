@@ -201,7 +201,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         room: room
                     },
                     success: function() {
-
+                        // Hide the pragraph that saying `create room`
+                        document.getElementById("myP").style.visibility = "none"
                         }
                     });
 
