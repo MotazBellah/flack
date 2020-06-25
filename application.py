@@ -15,14 +15,13 @@ import urllib.parse
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'Super_secret_key'
 socketio = SocketIO(app)
-#  Create predefined rooms
+#  Create gloable variables, to store the rooms and messages
 ROOMS = []
 mesage = {}
 
 UPLOAD_FOLDER = './static/uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-# app.config['WTF_CSRF_SECRET_KEY'] = "b'f\xfa\x8b{X\x8b\x9eM\x83l\x19\xad\x84\x08\xaa"
 
 
 def allowed_file(filename):
@@ -68,7 +67,7 @@ def index():
 
     return render_template('chat.html', username=username, login=login, ROOMS=ROOMS)
 
-
+# Return all the rooms if exist, to display it
 @app.route('/get-rooms', methods=['POST'])
 def get_rooms():
     if 'username' not in session:
@@ -86,13 +85,13 @@ def get_rooms():
 
     return jsonify({'success': 'Room created'})
 
+# Return all the messages if exist, to display it
 @app.route('/get-messages', methods=['POST'])
 def get_messages():
     if 'username' not in session:
         flash("Please login", 'danger')
         return redirect(url_for('login'))
 
-    text = []
     room = request.form['room'].lower()
 
     if room in mesage:
@@ -112,14 +111,17 @@ def login():
 
 @app.route('/logout')
 def logout():
+    # Remove the user from the session
     session.pop('username',None)
     flash("You have logged out successfuly", "success")
     return redirect(url_for('login'))
 
-
+# check_profanity before send the message to other users
 @app.route('/check-profanity', methods=['POST'])
 def check_profanity():
+    # Get the data from ajax request, which is the user message
     text = request.form['text']
+    # Use wdylike website to check if the text contains a profanity
     encoded_text = urllib.parse.quote(text, 'utf-8')
     with urlopen("http://www.wdylike.appspot.com/?q="+encoded_text) as url:
         output = url.read().decode("utf-8")
@@ -132,10 +134,13 @@ def check_profanity():
 @socketio.on('message')
 def message(data):
     x = data
+    # Added time stamp to the data
     x['time_stamp'] = strftime('%b-%d %I:%M%p', localtime())
-
+    # If the user in the room
+    # Save the messages in the mesage dict as value for room key
+    # keep saving, till the length be 100, then delete the odler message
     if data['room'].lower() in ROOMS:
-        if len(mesage[data['room'].lower()]) < 10:
+        if len(mesage[data['room'].lower()]) < 100:
             mesage[data['room'].lower()].append(x)
         else:
             mesage[data['room'].lower()].pop(0)
@@ -148,6 +153,8 @@ def message(data):
 # server-side event handler to join the room
 @socketio.on('join')
 def join(data):
+    # If the room in the global variable ROOM, then join
+    # Else, make sure the user won't be hoisted by nonexistent rooms
     if data['room'] in ROOMS:
         join_room(data['room'])
         send({"msg": data['username'] + " has joined the " + data['room'] + " room."}, room=data['room'])
@@ -161,7 +168,7 @@ def leave(data):
     leave_room(data['room'])
     send({"msg": data['username'] + " has left the " + data['room'] + " room."}, room=data['room'])
 
-
+# server-side event handler to create new room
 @socketio.on("create room")
 def create(data):
     room = data["room"]

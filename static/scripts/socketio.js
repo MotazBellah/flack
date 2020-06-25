@@ -77,8 +77,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Get the text on the input field and send it to the server once the button is clicked
     document.querySelector('#send_message').onclick = () => {
-
+        // Get the user message
         var user_message = document.querySelector('#user_message').value
+        // Send post AJAX request to check_profanity
+        // If profanity found, informe the user before send it to all other users
+        // else, send it to all other users
         $.ajax({
             type: 'post',
             url: '/check-profanity',
@@ -187,7 +190,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // When connected, check rom creation
+    // When connected, check room creation
       socket.on('connect', () => {
           document.querySelector('#create-room').onclick = () => {
               const room = prompt("Please enter the name of the room");
@@ -201,8 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         room: room
                     },
                     success: function() {
-                        // Hide the pragraph that saying `create room`
-                        document.getElementById("myP").style.visibility = "none"
+                        // Do Nothing!
                         }
                     });
 
