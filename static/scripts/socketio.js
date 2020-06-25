@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const span_data = document.createElement('span');
         const span_timestamp = document.createElement('span');
         const br = document.createElement('br');
-        console.log(data.errors);
+        // console.log(data.errors);
 
         // If user write message in one of the room
         if(data.username){
@@ -81,6 +81,53 @@ document.addEventListener("DOMContentLoaded", () => {
         socket.send({'msg': document.querySelector('#user_message').value,
                      'username': username, 'room': room
                  });
+        var x = document.querySelector('#user_message').value
+
+      //   var settings = {
+      //     'cache': false,
+      //     'dataType': "jsonp",
+      //     "async": true,
+      //     "crossDomain": true,
+      //     "url": 'http://www.wdylike.appspot.com/?q='+x,
+      //     "method": "POST",
+      //     "headers": {
+      //         "accept": "application/json",
+      //         "Access-Control-Allow-Origin":"*"
+      //     }
+      // }
+      // console.log(settings);
+      // $.ajax(settings).done(function (response) {
+      //     console.log(response);
+      //
+      // });
+
+              $.ajax({
+                  type: 'post',
+                  url: '/check-profanity',
+                  data: {
+                      text: x
+                  },
+                  success: function(response) {
+                      console.log(response);
+"
+                  }
+              });
+
+        // $.ajax({
+        //     type: 'post',
+        //     crossDomain: true,
+        //     url: 'http://www.wdylike.appspot.com/?q='+x,
+        //     headers: {
+        //          "accept": "application/json",
+        //          "Access-Control-Allow-Origin":"*"
+        //      },
+        //     data: {
+        //
+        //     },
+        //     success: function(response) {
+        //             console.log(response);
+        //             }
+        //     });
         // Clear input area
         document.querySelector('#user_message').value = '';
 

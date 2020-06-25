@@ -116,36 +116,33 @@ def logout():
     flash("You have logged out successfuly", "success")
     return redirect(url_for('login'))
 
-def check_profanity(text):
+
+@app.route('/check-profanity', methods=['POST'])
+def check_profanity():
+    text = request.form['text']
     encoded_text = urllib.parse.quote(text, 'utf-8')
     with urlopen("http://www.wdylike.appspot.com/?q="+encoded_text) as url:
         output = url.read().decode("utf-8")
         if 'true' in output:
-            return True
+            return jsonify({"error": 'Found Profanity Error'})
         else:
-            return False
+            return jsonify({"success": 'Nothing bad'})
 
 # server-side event handler to recivie/send messages
 @socketio.on('message')
 def message(data):
     x = data
-    print('^^^^^^^^^^^^^^^^^^^^^^^')
-    print(check_profanity(data['msg']))
-    print('^^^^^^^^^^^^^^^^^^^^^^^')
-    if check_profanity(data['msg']):
-        error = "Found-Profanity-Alarm-Error"
-    else:
-        x['time_stamp'] = strftime('%b-%d %I:%M%p', localtime())
-        error = ''
-        if data['room'] in mesage:
-            if len(mesage[data['room'].lower()]) < 5:
-                mesage[data['room'].lower()].append(x)
-            else:
-                mesage[data['room'].lower()].pop(0)
-                mesage[data['room'].lower()].append(x)
+    x['time_stamp'] = strftime('%b-%d %I:%M%p', localtime())
+
+    if data['room'] in mesage:
+        if len(mesage[data['room'].lower()]) < 5:
+            mesage[data['room'].lower()].append(x)
+        else:
+            mesage[data['room'].lower()].pop(0)
+            mesage[data['room'].lower()].append(x)
 
     send({'msg': data['msg'], 'username': data['username'],
-          'time_stamp': strftime('%b-%d %I:%M%p', localtime()), 'errors': error}, room=data['room'].lower())
+          'time_stamp': strftime('%b-%d %I:%M%p', localtime())}, room=data['room'].lower())
 
 
 # server-side event handler to join the room

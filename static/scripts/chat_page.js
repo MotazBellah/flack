@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () =>{
-    console.log(login);
+    // console.log(login);
     // if (login==='loggedout') {
     //     const name = prompt("Please enter your name")
     //     if (name != null){
