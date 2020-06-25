@@ -7,7 +7,7 @@ In this project, you’ll build an online messaging service using Flask, similar
 - scripts/socketio.js: the file containing the client-side that handle SocketIO connection
 - requirements.txt: list of Python packages installed
 - templates/: folder with all HTML files
-- static/: for with all JS scripts and CSS files
+- static/: for with all JS scripts and CSS files and upload folder
 
 ## Application Features
 
@@ -17,12 +17,13 @@ In this project, you’ll build an online messaging service using Flask, similar
 - Messages View: Once a channel is selected, the user should see any messages that have already been sent in that channel, up to a maximum of 100 messages. Your app should only store the 100 most recent messages per channel in server-side memory.
 - Sending Messages: Once in a channel, users should be able to send text messages to others the channel. When a user sends a message, their display name and the timestamp of the message should be associated with the message. All users in the channel should then see the new message (with display name and timestamp) appear on their channel page. Sending and receiving messages should NOT require reloading the page.
 - Remembering the Channel: If a user is on a channel page, closes the web browser window, and goes back to your web application, The application should remember what channel the user was on previously and take the user back to that channel.
-- Personal Touch: support use attachments (file uploads) as messages
+- Upload: support use attachments (file uploads) as messages
+- Profanity Checker: Check the user message if contains a profanity before send it to all other users, and inform the sender if he/she want to send it anyway or not
 
 ## Clone/Run app
 ````
 # Clone repo
-$ git clone https://github.com/MotazBellah/sc50p2.git
+$ git clone https://github.com/MotazBellah/flack.git
 
 # Install all dependencies
 $ pip install -r requirements.txt
