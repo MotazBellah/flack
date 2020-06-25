@@ -9,6 +9,7 @@ try:
     from urllib import urlopen
 except ImportError:
     from urllib.request import urlopen
+# Only python 3
 import urllib.parse
 
 
@@ -119,16 +120,20 @@ def logout():
 # check_profanity before send the message to other users
 @app.route('/check-profanity', methods=['POST'])
 def check_profanity():
-    # Get the data from ajax request, which is the user message
-    text = request.form['text']
-    # Use wdylike website to check if the text contains a profanity
-    encoded_text = urllib.parse.quote(text, 'utf-8')
-    with urlopen("http://www.wdylike.appspot.com/?q="+encoded_text) as url:
-        output = url.read().decode("utf-8")
-        if 'true' in output:
-            return jsonify({"error": 'Found Profanity Error'})
-        else:
-            return jsonify({"success": 'Nothing bad'})
+    try:
+        # Get the data from ajax request, which is the user message
+        text = request.form['text']
+        # Use wdylike website to check if the text contains a profanity
+        encoded_text = urllib.parse.quote(text, 'utf-8')
+        with urlopen("http://www.wdylike.appspot.com/?q="+encoded_text) as url:
+            output = url.read().decode("utf-8")
+            if 'true' in output:
+                return jsonify({"error": 'Found Profanity Error'})
+    except Exception as e:
+        print(e)
+        pass
+
+    return jsonify({"success": 'Nothing bad'})
 
 # server-side event handler to recivie/send messages
 @socketio.on('message')
