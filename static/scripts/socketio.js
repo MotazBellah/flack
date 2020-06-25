@@ -109,25 +109,9 @@ document.addEventListener("DOMContentLoaded", () => {
                   },
                   success: function(response) {
                       console.log(response);
-"
                   }
               });
 
-        // $.ajax({
-        //     type: 'post',
-        //     crossDomain: true,
-        //     url: 'http://www.wdylike.appspot.com/?q='+x,
-        //     headers: {
-        //          "accept": "application/json",
-        //          "Access-Control-Allow-Origin":"*"
-        //      },
-        //     data: {
-        //
-        //     },
-        //     success: function(response) {
-        //             console.log(response);
-        //             }
-        //     });
         // Clear input area
         document.querySelector('#user_message').value = '';
 
