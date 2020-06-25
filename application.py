@@ -132,16 +132,20 @@ def message(data):
     print('^^^^^^^^^^^^^^^^^^^^^^^')
     print(check_profanity(data['msg']))
     print('^^^^^^^^^^^^^^^^^^^^^^^')
-    x['time_stamp'] = strftime('%b-%d %I:%M%p', localtime())
-    if data['room'] in mesage:
-        if len(mesage[data['room'].lower()]) < 5:
-            mesage[data['room'].lower()].append(x)
-        else:
-            mesage[data['room'].lower()].pop(0)
-            mesage[data['room'].lower()].append(x)
+    if check_profanity(data['msg']:
+        error = "Found-Profanity-Alarm-Error"
+    else:
+        x['time_stamp'] = strftime('%b-%d %I:%M%p', localtime())
+        error = ''
+        if data['room'] in mesage:
+            if len(mesage[data['room'].lower()]) < 5:
+                mesage[data['room'].lower()].append(x)
+            else:
+                mesage[data['room'].lower()].pop(0)
+                mesage[data['room'].lower()].append(x)
 
     send({'msg': data['msg'], 'username': data['username'],
-          'time_stamp': strftime('%b-%d %I:%M%p', localtime())}, room=data['room'].lower())
+          'time_stamp': strftime('%b-%d %I:%M%p', localtime()), 'errors': error}, room=data['room'].lower())
 
 
 # server-side event handler to join the room

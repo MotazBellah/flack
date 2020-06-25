@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const span_data = document.createElement('span');
         const span_timestamp = document.createElement('span');
         const br = document.createElement('br');
+        console.log(data.errors);
 
         // If user write message in one of the room
         if(data.username){
