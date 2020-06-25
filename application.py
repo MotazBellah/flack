@@ -82,6 +82,8 @@ def index():
         user = User(username=username, password=hashed_pswd)
         db.session.add(user)
         db.session.commit()
+        db.session.close()
+        db.session.remove()
 
         flash("Registered succesfully. Please login.", 'success')
         return redirect(url_for('login'))
@@ -96,6 +98,8 @@ def login():
     # Allow login if validation success
     if login_form.validate_on_submit():
         user_object = User.query.filter_by(username=login_form.username.data).first()
+        db.session.close()
+        db.session.remove()
         login_user(user_object)
         return redirect(url_for('chat'))
 
@@ -118,6 +122,8 @@ def chat():
     user_id = current_user.get_id()
     login = 'loggedin'
     username = User.query.filter_by(id=user_id).first().username
+    db.session.close()
+    db.session.remove()
 
 
     return render_template('chat.html', username=username, login=login, ROOMS=ROOMS)
