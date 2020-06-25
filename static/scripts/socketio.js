@@ -9,13 +9,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // make lounge is a default room
     //  and add the user to it
     let room = localStorage.getItem('lastRoom');
-    console.log(room);
+
     if (room !== '') {
         document.querySelector('#send_message').disabled = false;
         // document.querySelector("#input-area").style.display = "block";
         joinRoom(room)
     } else {
-        console.log(room);
+
         alert("Please create a room to start chatting")
         document.querySelector('#send_message').display = true;
         // document.querySelector("#input-area").style.display = "none";
@@ -28,7 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const span_data = document.createElement('span');
         const span_timestamp = document.createElement('span');
         const br = document.createElement('br');
-        // console.log(data.errors);
 
         // If user write message in one of the room
         if(data.username){
@@ -78,9 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Get the text on the input field and send it to the server once the button is clicked
     document.querySelector('#send_message').onclick = () => {
-        // socket.send({'msg': document.querySelector('#user_message').value,
-        //              'username': username, 'room': room
-        //          });
+
         var user_message = document.querySelector('#user_message').value
         $.ajax({
             type: 'post',
@@ -112,17 +109,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
         /* attach a submit handler to the form */
     $("#send_file_form").submit(function(event) {
-        // alert("HHHH")
+
 
       /* stop form from submitting normally */
       event.preventDefault();
       var form_data = new FormData($('#send_file_form')[0]);
-      console.log(form_data);
-      // form_data.append('file', $('#send_file_form').prop('files')[0]);
 
       /* get the action attribute from the <form action=""> element */
       var form = $(this);
-      // var url = form.attr('action');
+
 
       $.ajax({
              type: "POST",
@@ -133,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
              processData: false,
              success: function(data)
              {
-                 console.log(['filename']); // show response from the php script.
+
                  socket.send({'msg': data['filename'],
                                   'username': username, 'room': room
                               });
@@ -144,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Room selection
     const rooms = document.querySelectorAll('.select-room');
-    console.log(rooms);
+
     rooms.forEach((p) => {
         p.onclick = () => {
             let newRoom = p.innerHTML;
@@ -184,11 +179,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 room: room
             },
             success: function(response) {
-                // alert("Room")
-                // displayMessage(data);
-                console.log(response);
                 for (var i = 0; i < response['messages'].length; i++) {
-                    console.log(response['messages'][i])
+
                     displayMessage(response['messages'][i])
                 }
             }
@@ -223,11 +215,11 @@ document.addEventListener("DOMContentLoaded", () => {
           var p = document.createElement('p')
           p.textContent = data.room
           p.className = 'select-room'
-          console.log(p);
+
           rooms.appendChild(p)
-          console.log(rooms);
+
           const cx = document.querySelectorAll('.select-room');
-          console.log(cx);
+
           cx.forEach((p) => {
               p.onclick = () => {
                   let newRoom = p.innerHTML;
