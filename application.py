@@ -9,7 +9,7 @@ from flask import send_from_directory
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'Super_secret_key'
 socketio = SocketIO(app)
-#  Create predefined rooms
+
 ROOMS = []
 mesage = {}
 
