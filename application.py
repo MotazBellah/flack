@@ -117,7 +117,7 @@ def logout():
     return redirect(url_for('login'))
 
 def check_profanity(text):
-    encoded_text = urlparse.quote(text, 'utf-8')
+    encoded_text = urllib.parse.quote(text, 'utf-8')
     with urlopen("http://www.wdylike.appspot.com/?q="+encoded_text) as url:
         output = url.read().decode("utf-8")
         if 'true' in output:
