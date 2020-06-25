@@ -4,6 +4,12 @@ from flask import Flask, render_template, redirect, url_for, flash, request, ses
 from flask_socketio import SocketIO, emit, send, join_room, leave_room
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
+# To make sure the code is correct with python 2.x and 3.x
+try:
+    from urllib import urlopen
+except ImportError:
+    from urllib.request import urlopen
+import urllib.parse
 
 
 app = Flask(__name__)
@@ -110,11 +116,22 @@ def logout():
     flash("You have logged out successfuly", "success")
     return redirect(url_for('login'))
 
+def check_profanity(text):
+    encoded_text = urlparse.quote(text, 'utf-8')
+    with urlopen("http://www.wdylike.appspot.com/?q="+encoded_text) as url:
+        output = url.read().decode("utf-8")
+        if 'true' in output:
+            return True
+        else:
+            return False
 
 # server-side event handler to recivie/send messages
 @socketio.on('message')
 def message(data):
     x = data
+    print('^^^^^^^^^^^^^^^^^^^^^^^')
+    print(check_profanity(data['msg']))
+    print('^^^^^^^^^^^^^^^^^^^^^^^')
     x['time_stamp'] = strftime('%b-%d %I:%M%p', localtime())
     if data['room'] in mesage:
         if len(mesage[data['room'].lower()]) < 5:
