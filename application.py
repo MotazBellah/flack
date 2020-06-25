@@ -4,10 +4,18 @@ from flask import Flask, render_template, redirect, url_for, flash, request, ses
 from flask_socketio import SocketIO, emit, send, join_room, leave_room
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
+from flask_login import LoginManager, login_user, current_user, login_required, logout_user
+from passlib.hash import pbkdf2_sha256
+from wtform_fields import *
+from models import *
 
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'Super_secret_key'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///chat.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
 socketio = SocketIO(app)
 
 ROOMS = []
@@ -16,8 +24,15 @@ mesage = {}
 UPLOAD_FOLDER = './static/uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-# app.config['WTF_CSRF_SECRET_KEY'] = "b'f\xfa\x8b{X\x8b\x9eM\x83l\x19\xad\x84\x08\xaa"
+app.config['WTF_CSRF_SECRET_KEY'] = "b'f\xfa\x8b{X\x8b\x9eM\x83l\x19\xad\x84\x08\xaa"
 
+# Configure flask login
+login = LoginManager(app)
+login.init_app(app)
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -46,23 +61,63 @@ def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
 
-
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    login = 'loggedout'
-    username = ''
-    if 'username' in session:
-        login = 'loggedin'
-        username = session['username']
-    else:
+    reg_form = RegistrationForm()
+    if reg_form.validate_on_submit():
+        username = reg_form.username.data
+        password = reg_form.password.data
+        # hash the password, and save it in db
+        hashed_pswd = pbkdf2_sha256.hash(password)
+
+        # Add user to DB
+        user = User(username=username, password=hashed_pswd)
+        db.session.add(user)
+        db.session.commit()
+
+        flash("Registered succesfully. Please login.", 'success')
         return redirect(url_for('login'))
+
+    return render_template('index.html', form=reg_form)
+
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+    login_form = LoginForm()
+
+    # Allow login if validation success
+    if login_form.validate_on_submit():
+        user_object = User.query.filter_by(username=login_form.username.data).first()
+        login_user(user_object)
+        return redirect(url_for('chat'))
+
+    return render_template('login.html', form=login_form)
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    logout_user()
+    flash("You have logged out successfuly", "success")
+    return redirect(url_for('login'))
+
+@app.route("/chat", methods=['GET', 'POST'])
+def chat():
+    if not current_user.is_authenticated:
+        login = 'loggedout'
+        username = ''
+        flash("Please login", 'danger')
+        return redirect(url_for('login'))
+
+    user_id = current_user.get_id()
+    login = 'loggedin'
+    username = User.query.filter_by(id=user_id).first().username
+
 
     return render_template('chat.html', username=username, login=login, ROOMS=ROOMS)
 
 
 @app.route('/get-rooms', methods=['POST'])
 def get_rooms():
-    if 'username' not in session:
+    if not current_user.is_authenticated:
         flash("Please login", 'danger')
         return redirect(url_for('login'))
 
@@ -79,7 +134,7 @@ def get_rooms():
 
 @app.route('/get-messages', methods=['POST'])
 def get_messages():
-    if 'username' not in session:
+    if not current_user.is_authenticated:
         flash("Please login", 'danger')
         return redirect(url_for('login'))
 
@@ -91,20 +146,6 @@ def get_messages():
 
     return jsonify({'messages': []})
 
-
-@app.route('/login',methods=['GET','POST'])
-def login():
-    if request.method=='POST':
-        session['username']=request.form['username']
-        return redirect(url_for('index'))
-    return render_template('login.html')
-
-
-@app.route('/logout')
-def logout():
-    session.pop('username',None)
-    flash("You have logged out successfuly", "success")
-    return redirect(url_for('login'))
 
 
 # server-side event handler to recivie/send messages
