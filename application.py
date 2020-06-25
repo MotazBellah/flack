@@ -34,6 +34,14 @@ login.init_app(app)
 def load_user(id):
     return User.query.get(int(id))
 
+# manage a database connection
+# To avaid time errors
+@app.teardown_appcontext
+def shutdown_session(exception=None):
+    db.session.close()
+    db.session.remove()
+
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
