@@ -132,7 +132,7 @@ def message(data):
     print('^^^^^^^^^^^^^^^^^^^^^^^')
     print(check_profanity(data['msg']))
     print('^^^^^^^^^^^^^^^^^^^^^^^')
-    if check_profanity(data['msg']:
+    if check_profanity(data['msg']):
         error = "Found-Profanity-Alarm-Error"
     else:
         x['time_stamp'] = strftime('%b-%d %I:%M%p', localtime())
